@@ -2,7 +2,6 @@ import Mathlib.Data.EReal.Basic
 import Mathlib.Order.CompleteLattice.Defs
 import Mathlib.Data.Set.Image
 import Mathlib.Data.Set.Defs
-import Mathlib.Data.Set.Lattice
 
 
 structure OptimizationProblem (X : Type) where

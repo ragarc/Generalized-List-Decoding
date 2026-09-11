@@ -5,6 +5,8 @@ import Mathlib.Data.Fintype.Card
 import CsProofs.Optimization
 
 variable (n : ℕ)
+variable {R : Type*}
+variable [Ring R] [PartialOrder R] [StarRing R]
 
 structure PseudoExpectaion (constraints : Set (MvPolynomial (Fin n) ℝ)) where
   toFun : (MvPolynomial (Fin n) ℝ) → ℝ
@@ -23,18 +25,9 @@ end BooleanPOP
 structure BinaryPolynomialOptimizationProblem extends PolynomialOptimizationProblem n where
   P_feasible_set_contained_in_hypercube : (BooleanPOP.BooleanConstraintSet n) ⊆ constraints
 
-def MonomialDegree (monomial : (Fin n →₀ ℕ)) : ℕ :=
-  monomial.sum (fun _ x => x)
-
-def MonomialsOfDegreeAtMost (degree : ℕ) : Set (Fin n →₀ ℕ) :=
-  {f | (MonomialDegree n f) ≤ degree}
-
 @[reducible]
 def SubsetsOfSizeAtMost (k : ℕ) (X : Type): Set (Finset X) :=
   {x | x.card ≤ k}
-
-def Linearize {n : ℕ} (monomial : Fin n →₀ ℕ) : Fin n →₀ ℕ :=
-  ⟨monomial.support, fun i => min (monomial i) 1, by simp⟩
 
 noncomputable def Extend (d : ℕ) (p : MvPolynomial (Fin n) ℝ) :
   Matrix (SubsetsOfSizeAtMost d (Fin n))
