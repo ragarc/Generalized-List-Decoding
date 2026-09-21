@@ -1,9 +1,25 @@
-structure LocalDistribution
--- want to create a sheaf. agreeing on the marginals is just
--- the morphism composition rules on the function of distributions
--- from the assignments category. I wonder if there exists a category
--- in lean.
+import Mathlib.Data.Fintype.Fin
+import Mathlib.Data.Fintype.Pi
+import CsProofs.FiniteDistribution
 
 
--- Then, we would like to show that  a pseudo expectation is
--- such an object.
+structure dSubsetsOfn (n d : ℕ) where
+  supp : Finset (Fin n)
+  card_le : supp.card ≤ d
+
+def restrict {n} {S T : Finset (Fin n)} (h : S ⊆ T) (q : ℕ) :
+    (T → Fin q) → (S → Fin q) :=
+  fun a x => a ⟨x.1, h x.2⟩
+
+lemma restrict_refl {n q} (S : Finset (Fin n)) :
+    restrict (le_refl S) q = id := by
+  funext a x; rfl
+
+lemma restrict_trans {n q} {S T U : Finset (Fin n)} (h1 : S ⊆ T) (h2 : T ⊆ U) :
+    restrict h1 q ∘ restrict h2 q = restrict (h1.trans h2) q := by
+  funext a x; rfl
+
+structure LocalDistribution (q n d : ℕ) where
+  mu : (S : dSubsetsOfn n d) → FiniteDistribution (S.supp → Fin q)
+  consistent : ∀ (S T : dSubsetsOfn n d) (h : S.supp ⊆ T.supp),
+    (mu T).pushforward (restrict h q) = mu S
