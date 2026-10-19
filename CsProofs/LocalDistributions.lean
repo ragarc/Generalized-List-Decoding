@@ -1,6 +1,6 @@
 import Mathlib.Data.Fintype.Fin
 import Mathlib.Data.Fintype.Pi
-import CsProofs.FiniteDistribution
+import CsProofs.Probability.FiniteDistribution
 
 
 structure dSubsetsOfn (n d : ℕ) where

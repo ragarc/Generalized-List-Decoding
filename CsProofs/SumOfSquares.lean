@@ -18,7 +18,7 @@ structure PolynomialOptimizationProblem where
   constraints : Set (MvPolynomial (Fin n) ℝ)
 
 namespace BooleanPOP
-def BooleanConstraintSet : Set (MvPolynomial (Fin n) ℝ) :=
+def BooleanConstraintSet (n : ℕ): Set (MvPolynomial (Fin n) ℝ) :=
     (fun i : Fin n => MvPolynomial.X i ^ 2 - 1) '' Set.univ
   ∪ (fun i : Fin n => 1 - MvPolynomial.X i ^ 2) '' Set.univ
 end BooleanPOP
@@ -54,8 +54,5 @@ def SOSRelaxation
     constraints := (poly_constraint_to_SOS_constraint d) '' P.constraints
   }
 
-namespace SumOfSquares
-
-
-
-end SumOfSquares
+structure PESolution (P : PolynomialOptimizationProblem n) (d : ℕ) where
+  sol : Solution (SOSRelaxation n P d).toOptimizationProblem
