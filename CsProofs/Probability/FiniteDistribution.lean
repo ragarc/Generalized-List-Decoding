@@ -3,6 +3,7 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Group.DivInvMonoid
 import Mathlib.Data.Finset.Union
 import Mathlib.Data.Finset.Prod
+import Mathlib.Algebra.BigOperators.Ring.Finset
 
 structure FiniteDistribution (α : Type*) [Fintype α] where
   prob : α → NNReal
@@ -43,31 +44,21 @@ def pushforward (f : α → β) (mu : FiniteDistribution α) :
     exact mu.is_distribution
 
 
+omit [DecidableEq α] [Fintype β] [DecidableEq β] in
 
 def event_prob (mu : FiniteDistribution α) (A : Finset α) : NNReal :=
   ∑ x ∈ A, mu.prob x
 
-
--- set_option pp.notation false in
-/-- Conditioning on an event of nonzero probability. -/
 noncomputable def conditional (A : Finset α) (mu : FiniteDistribution α)
     (h : event_prob mu A ≠ 0) : FiniteDistribution A where
   prob x := mu.prob x / event_prob mu A
   is_distribution := by
-    have hsum : ∑ x ∈ A, mu.prob x = event_prob mu A := by
-      unfold event_prob
-      rfl
+    simp only [div_eq_mul_inv]
+    rw [← Finset.sum_mul]
+    rw [Finset.sum_coe_sort]
+    exact mul_inv_cancel₀ h
 
-    have duh : HDiv.hDiv (mu.prob ↑x) (mu.event_prob A)
-     = mu.prob ↑x * (mu.event_prob A)⁻¹ := by
-
-
-
-    -- exact div_self h
-
-omit [DecidableEq α] [Fintype β] [DecidableEq β] in
-
-noncomputable def expectation [AddCommGroup β] [Module ℝ β]
+def expectation [AddCommGroup β] [Module ℝ β]
     (mu : FiniteDistribution α) (f : α → β) : β :=
   ∑ x, mu.prob x • f x
 
